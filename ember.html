@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title> Ember hex draw application</title>
+    <style>
+        .tutWrapper{
+            position:relative;
+            border:10px red solid;
+        }
+        #tutorial{
+            position:absolute;
+            left:0px;
+            top:0px;
+        }
+    </style>
+</head>
+<body>
+<script type="text/x-handlebars">
+<div class="control-panel">
+    <p>Url
+        {{input type="text" class="myClass" valueBinding="imageUrl"}}
+        Num X
+        {{input type="text" valueBinding="numHexesX"}}
+        Num Y
+        {{input type="text" valueBinding="numHexesY"}}
+
+    <p>x
+        <button {{action decX}} > - </button>
+        {{input type="text" valueBinding="x"}}
+        <button {{action incX}} > + </button>
+        y
+        <button {{action decY }} > - </button>
+        {{input type="text" valueBinding="y"}}
+        <button {{action incY }} > + </button>
+    </p>
+    Size
+    <button {{action decHexSize }} > - </button>
+    {{input type="text" valueBinding="hexSize"}}
+    <button {{action incHexSize }} > + </button>
+    Or...
+    Hexside Width {{input type="text" valueBinding="a"}}
+    Half Hex Height {{input type="text" valueBinding="b"}}
+    Hexside Length {{input type="text" valueBinding="c"}}
+
+    </p>
+    {{view App.GawdAwfulView}}
+    <div class="tutWrapper">
+{{view App.View}}
+    </div>
+</div>
+</script>
+<script data-template-name="GawdAwfulView" type="text/x-handlebars">
+    <button {{action "push" target="view"}}>PUSHP{{a}}USHPUSH</button>
+</script>
+<script data-template-name="splunge" type="text/x-handlebars">
+<div>
+        <img {{bindAttr src="imageUrl"}}>
+        <canvas id="tutorial" width="3000px" height="3000px"></canvas>
+</div>
+    </script>
+<script data-template-name="tut" type="text/x-handlebars">
+</script>
+<script src="jquery-2.0.3.js"></script>
+<script src="handlebars-1.0.0.js"></script>
+<script src="ember.js"></script>
+<script src="ember-console-utils.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
