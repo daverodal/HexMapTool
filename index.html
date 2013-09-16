@@ -17,41 +17,39 @@
 </head>
 <body>
 <script type="text/x-handlebars">
-<div class="control-panel">
-    <p>Url
-        {{input type="text" class="myClass" valueBinding="imageUrl"}}
-        Num X
-        {{input type="text" valueBinding="numHexesX"}}
-        Num Y
-        {{input type="text" valueBinding="numHexesY"}}
+    <ul>
+    <li>{{#linkTo 'maps'}}Posts{{/linkTo}}</li>
+    </ul>
+    {{outlet}}
 
-    <p>x
-        <button {{action decX}} > - </button>
-        {{input type="text" valueBinding="x"}}
-        <button {{action incX}} > + </button>
-        y
-        <button {{action decY }} > - </button>
-        {{input type="text" valueBinding="y"}}
-        <button {{action incY }} > + </button>
-    </p>
-    Size
-    <button {{action decHexSize }} > - </button>
-    {{input type="text" valueBinding="hexSize"}}
-    <button {{action incHexSize }} > + </button>
-    Or...
-    Hexside Width {{input type="text" valueBinding="a"}}
-    Half Hex Height {{input type="text" valueBinding="b"}}
-    Hexside Length {{input type="text" valueBinding="c"}}
-
-    </p>
-    {{view App.GawdAwfulView}}
-    <div class="tutWrapper">
-{{view App.View}}
-    </div>
-</div>
 </script>
-<script data-template-name="GawdAwfulView" type="text/x-handlebars">
-    <button {{action "push" target="view"}}>PUSHP{{a}}USHPUSH</button>
+<script type="text/x-handlebars"  id="maps">
+    <h1> Maps Handlebar </h1>
+    {{outlet}}
+
+</script>
+<script type="text/x-handlebars"  id="maps/index">
+<h2> index map index </h2>
+    <ul>
+        <li>{{#linkTo 'maps.new'}}New{{/linkTo}}</li>
+        {{#each model}}
+            <li>
+                {{#linkTo 'map' this}}{{mapUrl}} <small class='muted'>by {{numX}}</small>{{/linkTo}}
+            </li>
+        {{/each}}
+    </ul>
+    {{outlet}}
+
+</script>
+<script type="text/x-handlebars"  id="maps/new">
+    <h2> new map </h2>
+    <ul>
+    </ul>
+    <button {{action "save"}}>SaveME</button>
+
+</script>
+<script data-template-name="GawdAwfulView"  type="text/x-handlebars">
+    <h1> button</h1> <button {{action "push" target="view"}}>hi</button>
 </script>
 <script data-template-name="splunge" type="text/x-handlebars">
 <div>
@@ -59,11 +57,57 @@
         <canvas id="tutorial" width="3000px" height="3000px"></canvas>
 </div>
     </script>
+<script type="text/x-handlebars" data-template-name="map" id="map">
+    <div class="control-panel">
+        <p>Url
+            {{input type="text" class="myClass" valueBinding="mapUrl"}}
+            Num X
+            {{input type="text" valueBinding="numX"}}
+            Num Y
+            {{input type="text" valueBinding="numY"}}
+
+        <p>x
+            <button {{action decX}} > - </button>
+            {{input type="text" valueBinding="x"}}
+            <button {{action incX}} > + </button>
+            y
+            <button {{action decY }} > - </button>
+            {{input type="text" valueBinding="y"}}
+            <button {{action incY }} > + </button>
+        </p>
+        Size
+        <button {{action decHexSize }} > - </button>
+        {{input type="text" valueBinding="hexSize"}}
+        <button {{action incHexSize }} > + </button>
+        Or...
+        Hexside Width {{input type="text" valueBinding="a"}}
+        Half Hex Height {{input type="text" valueBinding="b"}}
+        Hexside Length {{input type="text" valueBinding="c"}}
+        a{{isMe}}b
+<button {{action save}}>save</button>
+        </p>
+        <!--{{view App.GawdAwfulView}}-->
+        <!--<div class="tutWrapper">-->
+        <!--</div>-->
+    </div>
+    <div class="tutWrapper">
+
+    <img {{bindAttr src="mapUrl"}}>
+        <canvas id="tutorial" width="3000px" height="3000px"></canvas>
+
+    </div>
+
+    <h1>{{mapUrl}}</h1>
+    <h2>by {{numX}}</h2>
+    <div>{{numY}}</div>
+</script>
+
 <script data-template-name="tut" type="text/x-handlebars">
 </script>
 <script src="jquery-2.0.3.js"></script>
 <script src="handlebars-1.0.0.js"></script>
 <script src="ember.js"></script>
+<script src="ember-data-latest.js"></script>
 <script src="ember-console-utils.js"></script>
 <script src="app.js"></script>
 </body>
