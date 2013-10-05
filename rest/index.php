@@ -17,8 +17,8 @@ if($_SERVER['REQUEST_METHOD'] == 'PUT'){
     exit();
 }
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
-    $id = file_get_contents("/tmp/maps/id");
-    file_put_contents("/tmp/maps/id",$id+1);
+    $id = file_get_contents("/tmp/maps/_id");
+    file_put_contents("/tmp/maps/_id",$id+1);
     $id = trim($id);
     $putdata = fopen("php://input", "r");
     $pInfo = $_SERVER['PATH_INFO'];
@@ -43,28 +43,44 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 }
 
 $pInfo = $_SERVER['PATH_INFO'];
-if(true){
-    if ($handle = opendir('/tmp/maps')) {
 
-
-        $maps = array();
-        /* This is the correct way to loop over the directory. */
-        while (false !== ($entry = readdir($handle))) {
-            if($entry === "." || $entry === ".." || $entry === "id"){
-                continue;
-            }
-            $map = json_decode(file_get_contents("/tmp/maps/$entry"));
-            $map->map->id = $entry;
-            $maps[] = $map->map;
-        }
-        $top = new stdClass();
-        $top->maps = $maps;
+$args = explode("/",$pInfo);
+array_shift($args);
+//if(count($args) != 1){
+//    die("Not valid args $pInfo");
+//}
+list($modelName,$id) = $args;
+if($_SERVER['REQUEST_METHOD'] == 'GET'){
+    $top = new stdClass();
+    $ret = array();
+    $singleModel = substr($modelName,0, -1);
+    if($id){
+        $model = json_decode(file_get_contents("/tmp/$modelName/$id"));
+        $model->$singleModel->id = $id;
+//        var_dump($model);
+        $top->$singleModel = $model->$singleModel;
         header('Content-type: application/json');
         echo json_encode($top);
         exit();
-
-
     }
+    if ($handle = opendir("/tmp/$modelName")) {
+
+
+        /* This is the correct way to loop over the directory. */
+        while (false !== ($entry = readdir($handle))) {
+            if($entry === "." || $entry === ".." || $entry === "_id"){
+                continue;
+            }
+            $model = json_decode(file_get_contents("/tmp/$modelName/$entry"));
+            $model->$singleModel->id = $entry;
+            $ret[] = $model->$singleModel;
+        }
+            $top->$modelName = $ret;
+    }
+    header('Content-type: application/json');
+    echo json_encode($top);
+    exit();
+
 }
 if($pInfo == "/maps"){
 

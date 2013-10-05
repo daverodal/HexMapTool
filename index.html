@@ -4,60 +4,92 @@
     <meta charset="utf-8">
     <title> Ember hex draw application</title>
     <style>
-        .tutWrapper{
-            position:relative;
-            border:10px red solid;
+        .tutWrapper {
+            position: relative;
+            border: 10px red solid;
         }
-        #tutorial{
-            position:absolute;
-            left:0px;
-            top:0px;
+
+        #tutorial {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+
+        li {
+            list-style: none;
+        }
+        li span{
+            width:9em;
+            display:inline-block;
+            text-align: right;
+            margin-right:15px;
         }
     </style>
 </head>
 <body>
 <script type="text/x-handlebars">
     <ul>
-    <li>{{#linkTo 'maps'}}Posts{{/linkTo}}</li>
+        <li>{{#linkTo 'maps'}}Maps{{/linkTo}}</li>
     </ul>
     {{outlet}}
 
 </script>
-<script type="text/x-handlebars"  id="maps">
-    <h1> Maps Handlebar </h1>
+<script type="text/x-handlebars" id="maps">
     {{outlet}}
-
 </script>
-<script type="text/x-handlebars"  id="maps/index">
-<h2> index map index </h2>
+<script type="text/x-handlebars" id="maps/index">
+    <h2> index map index </h2>
     <ul>
         <li>{{#linkTo 'maps.new'}}New{{/linkTo}}</li>
         {{#each model}}
-            <li>
-                {{#linkTo 'map' this}}{{mapUrl}} <small class='muted'>by {{numX}}</small>{{/linkTo}}
-            </li>
+        <li>
+            {{#linkTo 'map' this}}{{mapUrl}}
+            <small class='muted'>by {{numX}}</small>
+            {{/linkTo}}
+        </li>
         {{/each}}
     </ul>
     {{outlet}}
 
 </script>
-<script type="text/x-handlebars"  id="maps/new">
+<script type="text/x-handlebars" id="maps/new">
     <h2> new map </h2>
     <ul>
     </ul>
-    <button {{action "save"}}>SaveME</button>
+    <button
+    {{action "save"}}>SaveME</button>
 
 </script>
-<script data-template-name="GawdAwfulView"  type="text/x-handlebars">
-    <h1> button</h1> <button {{action "push" target="view"}}>hi</button>
+<script type="text/x-handlebars" id="map">
+    {{outlet}}
 </script>
-<script data-template-name="splunge" type="text/x-handlebars">
-<div>
-        <img {{bindAttr src="imageUrl"}}>
-        <canvas id="tutorial" width="3000px" height="3000px"></canvas>
-</div>
-    </script>
-<script type="text/x-handlebars" data-template-name="map" id="map">
+<script type="text/x-handlebars" id="map/index">
+
+    <li>
+        <button>{{#linkTo 'map.edit'}}Edit{{/linkTo}}</button>
+    </li>
+    <div class="control-panel">
+
+        <ul>
+            <li><span>Url:</span> {{mapUrl}}</li>
+            <li><span>Num X:</span> {{numX}}</li>
+            <li><span>Num Y:</span> {{numY}}</li>
+            <li><span>x:</span> {{x}}</li>
+            <li><span>y:</span> {{y}}</li>
+            <li><span>Hexside Width:</span> {{a}}</li>
+            <li><span>Half Hex Height:</span> {{b}}</li>
+            <li><span>Hexside Length:</span> {{c}}</li>
+        </ul>
+
+        </p>
+    </div>
+    {{view App.ClickableImageView}}
+</script>
+
+
+<script type="text/x-handlebars" id="map/edit">
+
+
     <div class="control-panel">
         <p>Url
             {{input type="text" class="myClass" valueBinding="mapUrl"}}
@@ -67,39 +99,49 @@
             {{input type="text" valueBinding="numY"}}
 
         <p>x
-            <button {{action decX}} > - </button>
+            <button
+            {{action decX}} > - </button>
             {{input type="text" valueBinding="x"}}
-            <button {{action incX}} > + </button>
+            <button
+            {{action incX}} > + </button>
             y
-            <button {{action decY }} > - </button>
+            <button
+            {{action decY }} > - </button>
             {{input type="text" valueBinding="y"}}
-            <button {{action incY }} > + </button>
+            <button
+            {{action incY }} > + </button>
         </p>
+        Perfect Hexs
+        {{view Ember.Checkbox checkedBinding="controllers.map.perfectHexes"}}
+        {{#if controllers.map.perfectHexes}}
         Size
-        <button {{action decHexSize }} > - </button>
+        <button
+        {{action decHexSize }} > - </button>
         {{input type="text" valueBinding="hexSize"}}
-        <button {{action incHexSize }} > + </button>
-        Or...
+        <button
+        {{action incHexSize }} > + </button>
+
+        Hex Side Width {{a}} Half Hex Height {{b}}  Hex Side Length {{c}}
+        {{else}}
         Hexside Width {{input type="text" valueBinding="a"}}
         Half Hex Height {{input type="text" valueBinding="b"}}
         Hexside Length {{input type="text" valueBinding="c"}}
+        {{/if}}
         a{{isMe}}b
-<button {{action save}}>save</button>
+        <button
+        {{action save}}>save</button>
         </p>
-        <!--{{view App.GawdAwfulView}}-->
-        <!--<div class="tutWrapper">-->
-        <!--</div>-->
     </div>
+    {{view App.ImageView}}
+
+</script>
+<script data-template-name="ImageView" type="text/x-handlebars">
     <div class="tutWrapper">
 
-    <img {{bindAttr src="mapUrl"}}>
-        <canvas id="tutorial" width="3000px" height="3000px"></canvas>
+        <img class="mapImage" {{bindAttr src="mapUrl"}}>
+        <canvas id="tutorial" {{bindAttr src="coNam" width="imageWidth" height="controller.imageHeight"}}></canvas>
 
     </div>
-
-    <h1>{{mapUrl}}</h1>
-    <h2>by {{numX}}</h2>
-    <div>{{numY}}</div>
 </script>
 
 <script data-template-name="tut" type="text/x-handlebars">
