@@ -14,28 +14,42 @@ if($_SERVER['REQUEST_METHOD'] == 'PUT'){
     /* Close the streams */
     fclose($fp);
     fclose($putdata);
+    $matches = [];
+    preg_match("/(\d*)$/",$pInfo,$matches);
+    $id = $matches[1];
+    $pName = preg_replace("/\/[^\/]*$/","",$pInfo);
+    $pName = preg_replace("/\//","",$pName);
+    $pName = preg_replace("/maps/","map",$pName);
+    $pName = preg_replace("/hexes/","hex",$pName);
+    $ret = json_decode(file_get_contents("/tmp$pInfo"));
+    $ret->$pName->id = $id;
+    header('Content-type: application/json');
+    echo json_encode($ret);
     exit();
 }
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
-    $id = file_get_contents("/tmp/maps/_id");
-    file_put_contents("/tmp/maps/_id",$id+1);
+    $pInfo = $_SERVER['PATH_INFO'];
+    $id = file_get_contents("/tmp$pInfo/_id");
+    file_put_contents("/tmp$pInfo/_id",$id+1);
     $id = trim($id);
     $putdata = fopen("php://input", "r");
-    $pInfo = $_SERVER['PATH_INFO'];
 
     /* Open a file for writing */
-    $fp = fopen("/tmp/maps/$id", "w");
+    $fp = fopen("/tmp$pInfo/$id", "w");
 
     /* Read the data 1 KB at a time
        and write to the file */
     while ($data = fread($putdata, 1024))
         fwrite($fp, $data);
 
+    $pName = preg_replace("/\//","",$pInfo);
+    $pName = preg_replace("/maps/","map",$pName);
+    $pName = preg_replace("/hexes/","hex",$pName);
     /* Close the streams */
     fclose($fp);
     fclose($putdata);
-    $ret = json_decode(file_get_contents("/tmp/maps/$id"));
-    $ret->map->id = $id;
+    $ret = json_decode(file_get_contents("/tmp$pInfo/$id"));
+    $ret->$pName->id = $id;
     header('Content-type: application/json');
     echo json_encode($ret);
     exit();

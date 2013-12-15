@@ -19,9 +19,9 @@ App.Router.map(function () {
 });
 
 App.MapsRoute = Ember.Route.extend({
-//        model: function() {
-//            return this.store.find('map');
-//    }
+        model: function() {
+            return this.store.find('map');
+    }
 });
 App.MapsIndexRoute = Ember.Route.extend({
     model: function () {
@@ -123,8 +123,13 @@ App.Map = DS.Model.extend({
     b: DS.attr('number'),
     c: DS.attr('number'),
     hexSize: DS.attr('number'),
-    perfectHexes: DS.attr('boolean')
+    perfectHexes: DS.attr('boolean'),
+    hexes: DS.hasMany('hex')
 
+});
+App.Hex = DS.Model.extend({
+    name: DS.attr('string'),
+    map: DS.belongsTo('map')
 });
 App.Map.FIXTURES = [
     {
@@ -175,9 +180,23 @@ App.MapsNewController = Ember.ObjectController.extend(App.draw, {
     },
     actions: {
         save: function () {
-            var model = this.store.createRecord('map', {mapUrl: "http://davidrodal.com/Battle/js/nta.png"});
-            model.save().then(function () {
-                this.transitionToRoute('map', model.get('id'));
+            var that = this;
+            var model = this.store.createRecord('map', {mapUrl: "http://davidrodal.com/Battle/js/MCW.png"});
+            model.save().then(function (pr) {
+                console.log("save model");
+                var hex = this.store.createRecord('hex',{name:"103",map:pr});
+                hex.save().then(function(hx){
+                    console.log("saved hex");
+                    debugger;
+                    model.get('hexes').pushObject(hex);
+                    model.save().then(function(){
+                        console.log("saved modelaagain "+model.get('id'));
+                        that.transitionToRoute('map', model.get('id'));
+                        return;
+                    },function(){
+                        alert("DANGER WILL ");
+                    }).bind(this);
+                }).bind(this);
             }.bind(this)
             );
         }
@@ -198,9 +217,7 @@ App.MapEditController = Ember.ObjectController.extend(App.draw,
         imageHeight: null,
         imageC: function () {
             $(".mapImage").error(function(){
-                alert("HELP MARIO");
             }).load(function(){
-                    alert("Thanks mario");
                 });
             $('.mapImage').load({me:this},function(data){
                 var height = $(this).height();
@@ -214,7 +231,13 @@ App.MapEditController = Ember.ObjectController.extend(App.draw,
             save: function () {
                 this.set('mapWidth',this.get('imageWidth'));
                 this.set('mapHeight',this.get('imageHeight'));
-                this.get('model').save().then(this.transitionToRoute('map'));
+                var hex = this.store.createRecord('hex',{name:"101",map:this.get('map')});
+                hex.save().then(function(hex){
+                    alert(hex.get('_id'));
+                    this.get('model').save().then(function(){
+                        this.transitionToRoute('map')
+                    });
+                })
             },
             decHexSize: function () {
                 debugger;
