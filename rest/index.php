@@ -63,7 +63,7 @@ array_shift($args);
 //if(count($args) != 1){
 //    die("Not valid args $pInfo");
 //}
-list($modelName,$id) = $args;
+@list($modelName,$id) = $args;
 if($_SERVER['REQUEST_METHOD'] == 'GET'){
     $top = new stdClass();
     $ret = array();

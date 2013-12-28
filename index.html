@@ -67,6 +67,7 @@
 
     <li>
         <button>{{#linkTo 'map.edit'}}Edit{{/linkTo}}</button>
+        <button>{{#linkTo 'map.hexes'}}Hexes{{/linkTo}}</button>
     </li>
     <div class="control-panel">
 
@@ -85,7 +86,11 @@
     </div>
     {{view App.ClickableImageView}}
 </script>
-
+<script type="text/x-handlebars" id="map/hexes">
+hmmmm
+        {{view App.ClickableImageView}}
+        why?
+</script>
 
 <script type="text/x-handlebars" id="map/edit">
 
