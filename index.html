@@ -24,6 +24,12 @@
             text-align: right;
             margin-right:15px;
         }
+        #terrainWrapper{
+            position:relative;
+        }
+        .terrain{
+            font-weight:bold;font-size:20px;position:absolute;
+        }
     </style>
 </head>
 <body>
@@ -88,7 +94,13 @@
 </script>
 <script type="text/x-handlebars" id="map/hexes">
 hmmmm
+<div id="terrainWrapper">
         {{view App.ClickableImageView}}
+        {{#each controller.hexData}}
+           {{number}} {{hexpartType}}
+          <div class="terrain" {{bind-attr style=style}}>L</div>
+        {{/each}}
+        </div>
         why?
 </script>
 

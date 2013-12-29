@@ -701,8 +701,10 @@ App.MapIndexController = Ember.ObjectController.extend(App.draw,
     }
 );
 App.MapHexesController = Ember.ObjectController.extend(App.draw, App.hexPick,App.hexpart,
-  {needs: 'map'
+  {needs: 'map',
+    hexData:[]
   }
+
 );
 App.MapEditController = Ember.ObjectController.extend(App.draw,
     {
@@ -847,9 +849,12 @@ App.ClickableImageView = App.ImageView.extend({
 debugger;
       this.get('controller').setHexpartXY(x, y);
 
-      var px = this.get('controller').getPixelX()- 6 +"px";
-      var py = this.get('controller').getPixelY() - 10+"px";
-      $(".tutWrapper").append("<div style='font-weight:bold;font-size:20px;position:absolute;top:"+py+";left:"+px+";'>L</div>")
+      var px = this.get('controller').getPixelX()+3 +"px";
+      var py = this.get('controller').getPixelY()+"px";
+      var hexpartType = this.get('controller').getHexpartType();
+      var hexNumber = this.get('controller.number');
+      this.get('controller.hexData').pushObject({number:hexNumber,x:px, y:py, style:'top:'+py+';left:'+px,hexpartType:hexpartType});
+//      $("#terrainWrapper").append("<div class='terrain' style='top:"+py+";left:"+px+";'>L</div>")
     },
     templateName: "ImageView",
     didInsertElement: function () {
