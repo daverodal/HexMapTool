@@ -360,8 +360,8 @@ App.hexPick = Ember.Mixin.create({
     var c =  mapData.get('c');
 
     var xOff = (a + c) * 2 - (c/2 + a);
-    this.set('originX', mapData.get('x') + xOff);
-    this.set('originY', mapData.get('y') + 3 * b);
+    this.set('originX', xOff - mapData.get('x') );
+    this.set('originY', 3 * b -  mapData.get('y'));
     this.set('topHeight', mapData.get('b'));
     this.set('bottomHeight', mapData.get('b'));
     this.set('hexsideWidth', mapData.get('a'));
@@ -382,6 +382,7 @@ App.hexPick = Ember.Mixin.create({
   {
 
     this.calculateHexpartFromPixels(pixelX, pixelY);
+    debugger;
     this.calculateHexagonFromPixels();
     this.calculateHexagonNumber();
   },
@@ -469,7 +470,8 @@ App.hexPick = Ember.Mixin.create({
         }
         else
         {
-          this.setHexagonXY(hexpartX, hexpartY + 2);
+          this.setHexagonXY(hexpartX, hexpartY - 2);
+//          this.setHexagonXY(hexpartX, hexpartY + 2);
         }
         break;
 
@@ -496,7 +498,8 @@ App.hexPick = Ember.Mixin.create({
           //  |* |\ |
           //  |__|_\|
           //
-          this.setHexagonXY(hexpartX - 1, hexpartY + 1);
+//          this.setHexagonXY(hexpartX - 1, hexpartY + 1);
+          this.setHexagonXY(hexpartX + 1, hexpartY - 1);
         }
         else
         {
@@ -523,7 +526,8 @@ App.hexPick = Ember.Mixin.create({
           //  | /|  |
           //  |/_|_ |
           //
-          this.setHexagonXY(hexpartX - 1, hexpartY - 1);
+//          this.setHexagonXY(hexpartX - 1, hexpartY - 1);
+          this.setHexagonXY(hexpartX + 1, hexpartY + 1);
         }
         else
         {
@@ -622,7 +626,8 @@ App.draw = Ember.Mixin.create({
 });
 App.Map = DS.Model.extend({
     mapUrl: DS.attr('string'),
-    mapWidth: DS.attr('number'),
+    myAttr: DS.attr('string'),
+    mapWidth: DS.attr('string'),
     mapHeight: DS.attr('number'),
     numX: DS.attr('number'),
     numY: DS.attr('number'),
@@ -687,7 +692,7 @@ App.MapsNewController = Ember.ObjectController.extend(App.draw, {
     actions: {
         save: function () {
             var that = this;
-            var model = this.store.createRecord('map', {mapUrl: "http://davidrodal.com/Battle/js/MCW.png"});
+            var model = this.store.createRecord('map', {mapWidth:"width:auto",mapUrl: "http://davidrodal.com/Battle/js/MCW.png"});
             model.save().then(function (pr) {
                 console.log("save model");
               this.transitionToRoute('map', model.get('id'));
@@ -697,12 +702,64 @@ App.MapsNewController = Ember.ObjectController.extend(App.draw, {
     }
 });
 App.MapIndexController = Ember.ObjectController.extend(App.draw,
-    {needs: 'map'
+    {needs: 'map',
+      originY:function(){
+        var b = this.get('b');
+        return b * 3 - this.get('y');
+      }.property('b','y'),
+      originX: function(){
+        var a = this.get('a');
+        var c = this.get('c');
+        var xOff = (a + c) * 2 - (c/2 + a);
+        return xOff - this.get('x');
+      }.property('a','c','y')
     }
+
 );
 App.MapHexesController = Ember.ObjectController.extend(App.draw, App.hexPick,App.hexpart,
   {needs: 'map',
-    hexData:[]
+
+    hexData:Ember.A(),
+    actions:{
+      save:function(){
+        var model = this.get('model');
+        var hexData = this.get('hexData');
+        var str = JSON.stringify(hexData);
+        debugger;
+        model.set('hexes', str);
+        var id = model.get('id');
+        model.save().then(function(){
+        });
+        this.transitionToRoute('map',id);
+      },
+      kill:function(){
+        this.set('hexData',Ember.A());
+      }
+    },
+  colors: [ "Town","Trail", "River", "Forest","Mountain","Road", "ReinforceZoneA","ReinforceZoneB","ReinforceZoneC", "Blocked"],
+    selectedColor:"Town"
+//    selectedLabel:function(){
+//      var col = this.get('selectedColor');
+//      var color = "black";
+//      switch(col){
+//        case 'Town':
+//          color = 'black';
+//          break;
+//        case "River":
+//          color = 'blue';
+//          break;
+//        case "Forest":
+//          color = "green";
+//          break;
+//        case "Mountain":
+//          color = "brown";
+//          break;
+//        case "rOad":
+//          color = "red";
+//          break;
+//      }
+//      return "<span style='color:"+color+"'>"+col.replace(/[a-z]/g,'')+"</span>";
+//    }.property('selectedColor')
   }
 
 );
@@ -728,8 +785,8 @@ App.MapEditController = Ember.ObjectController.extend(App.draw,
 
         actions: {
             save: function () {
-                this.set('mapWidth',this.get('imageWidth'));
-                this.set('mapHeight',this.get('imageHeight'));
+//                this.set('mapWidth',this.get('imageWidth'));
+//                this.set('mapHeight',this.get('imageHeight'));
                 this.get('model').save().then(this.transitionToRoute('map'));
 
             },
@@ -846,22 +903,173 @@ App.ClickableImageView = App.ImageView.extend({
 
       var x = this.get('controller.x');
       var y = this.get('controller.y');
-debugger;
-      this.get('controller').setHexpartXY(x, y);
+      var myCon = this.get('controller');
+      myCon.setHexpartXY(x, y);
 
-      var px = this.get('controller').getPixelX()+3 +"px";
-      var py = this.get('controller').getPixelY()+"px";
-      var hexpartType = this.get('controller').getHexpartType();
-      var hexNumber = this.get('controller.number');
-      this.get('controller.hexData').pushObject({number:hexNumber,x:px, y:py, style:'top:'+py+';left:'+px,hexpartType:hexpartType});
+      var px = myCon.getPixelX()+3 +"px";
+      var py = myCon.getPixelY()+"px";
+      var hexpartType = myCon.getHexpartType();
+      var hexNumber = myCon.get('number');
+      var name = hexNumber+"x"+hexpartType;
+      var myObj = myCon.get('hexData').findBy('name',name);
+      var curColor = this.get('controller.selectedColor');
+
+      if(myObj){
+        var curTerrain = myObj.type.findBy('name',curColor);
+        if(curTerrain){
+          myObj.get('type').removeObject(curTerrain);
+//          if(!myObj.get('type')){
+//            myCon.get('hexData').removeObject(myObj);
+//          }
+        }else{
+          var newTerrain = App.TerrainType.create({name:curColor});
+          myObj.get('type').pushObject(newTerrain);
+        }
+//        myCon.get('hexData').removeObject(myObj);
+
+      }else{
+        debugger;
+
+        var newTerrainType = App.TerrainType.create({name:curColor});
+        var type = Ember.A();
+        type.pushObject(newTerrainType);
+        var newTerrain = App.Terrain.create({type:type,name:name,number:hexNumber,x:px, y:py,hexpartType:hexpartType})
+
+//        var type = this.get('controller.selectedColor').replace(/[a-z]/g,'');
+//      myCon.get('hexData').pushObject({type:type,name:name,number:hexNumber,x:px, y:py, style:'top:'+py+';left:'+px,hexpartType:hexpartType});
+        myCon.get('hexData').pushObject(newTerrain);
+      }
 //      $("#terrainWrapper").append("<div class='terrain' style='top:"+py+";left:"+px+";'>L</div>")
+
+
     },
     templateName: "ImageView",
     didInsertElement: function () {
+      debugger;
         this._super();
+      var str = this.get('controller.model.hexes');
+      var arr = JSON.parse(str);
+      var hexes = Ember.A();
+      if(arr){
+      for(var i = 0;i < arr.length;i++){
+        var ter = App.Terrain.create(arr[i]);
+        hexes.pushObject(ter);
+      }
+      }
+      this.set('controller.hexData',hexes);
+      debugger;
     }
 });
+App.TerrainType = Ember.Object.extend({
+  name:null,
+  display:null
+});
 
+
+
+
+App.Terrain = Ember.Object.extend({
+  init:function(){
+    this._super();
+    var a = Ember.A();
+    var type=this.get('type');
+    for(var i = 0;i< type.length;i++)
+    {
+      a.pushObject(App.TerrainType.create(type[i]));
+    }
+    this.set('type',a);
+    debugger;
+  },
+  type:Ember.A(),
+  name:null,
+  number:null,
+  label:function(){
+    console.log('TERRAINLABEL ');
+    var len = this.get('type.length');
+
+    var col = this.get('type');
+    debugger;
+    var ret = "";
+    for(var i = 0;i < col.length;i++){
+    var color = "black";
+      var c;
+      c = col[i].get('name');
+      var disp = "X";
+    switch(c){
+      case 'Blocked':
+        color = 'RED';
+        disp = "B"
+        break;
+      case 'Town':
+        color = 'black';
+        disp = "T"
+        break;
+      case "River":
+        color = 'blue';
+        disp = "R"
+        break;
+      case "Forest":
+        color = "green";
+        disp = "F"
+        break;
+      case "Mountain":
+        color = "brown";
+        disp = "M";
+        break;
+      case "Road":
+        color = "red";
+        disp = "O";
+        break;
+      case "Trail":
+        color = "brown";
+        disp = "O";
+        break;
+      case "ReinforceZoneA":
+        color = "black";
+        disp = "A";
+        break;
+      case "ReinforceZoneB":
+        color = "black";
+        disp = "B";
+        break;
+      case "ReinforceZoneC":
+        color = "black";
+        disp = "C";
+        break;
+    }
+
+  ret +=  "<span style='color:"+color+"'>"+disp+"</span>";
+    }
+    return ret;
+  }.property('type.@each'),
+  code:function(){
+    var col = this.get('type');
+    debugger;
+    var ret = "";
+    for(var i = 0;i < col.length;i++){
+      var color = "black";
+      var c;
+      debugger;
+      c = col[i].get('name');
+      if(c == "ReinforceZoneA"){
+        ret += "$this->terrain->addReinforceZone("+this.get('number')+",'A');<br>";
+      }else       if(c == "ReinforceZoneB"){
+        ret += "$this->terrain->addReinforceZone("+this.get('number')+",'B');<br>";
+      }else       if(c == "ReinforceZoneC"){
+        ret += "$this->terrain->addReinforceZone("+this.get('number')+",'C');<br>";
+      }else{
+        ret += "$this->terrain->addTerrain("+this.get('number')+" ,"+this.get('hexpartType')+" , \""+ c.toLowerCase()+"\");<br>";
+      }
+        }
+    return ret;
+  }.property('type.@each'),
+  x:null,
+  y:null,
+  style:function(){
+    return 'top:'+this.get('y')+';left:'+this.get('x');
+  }.property('x','y'),
+  hexpartType:null
+});
 App.MapEditView = Ember.View.extend({
     didInsertElement: function () {
     }

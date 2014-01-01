@@ -28,7 +28,11 @@
             position:relative;
         }
         .terrain{
-            font-weight:bold;font-size:20px;position:absolute;
+            -webkit-user-select: none;
+            user-select:none;
+             pointer-events:none;
+            background:white;
+            font-weight:bold;font-size:13px;position:absolute;
         }
     </style>
 </head>
@@ -79,6 +83,7 @@
 
         <ul>
             <li><span>Url:</span> {{mapUrl}}</li>
+            <li><span>Width:</span> {{mapWidth}}</li>
             <li><span>Num X:</span> {{numX}}</li>
             <li><span>Num Y:</span> {{numY}}</li>
             <li><span>x:</span> {{x}}</li>
@@ -87,20 +92,31 @@
             <li><span>Half Hex Height:</span> {{b}}</li>
             <li><span>Hexside Length:</span> {{c}}</li>
         </ul>
-
+        <pre>
+$this->mapViewer[$player]->setData({{controller.originX}} , {{controller.originY}}, // originX, originY
+                    {{b}}, {{b}}, // top hexagon height, bottom hexagon height
+                    {{a}}, {{c}}// hexagon edge width, hexagon center width
+                );
+        </pre>
         </p>
     </div>
-    {{view App.ClickableImageView}}
+    {{view App.ImageView}}
 </script>
 <script type="text/x-handlebars" id="map/hexes">
 hmmmm
+{{view Ember.Select contentBinding="colors" selectionBinding="selectedColor"  }}
+    <button {{action "save"}}>save these hexes dude</button>
+    <button {{action "kill"}}>kill all these hexes dude</button>
+
 <div id="terrainWrapper">
         {{view App.ClickableImageView}}
         {{#each controller.hexData}}
-           {{number}} {{hexpartType}}
-          <div class="terrain" {{bind-attr style=style}}>L</div>
+          <div class="terrain" {{bind-attr style=style}}>{{{label}}}</div>
         {{/each}}
         </div>
+        {{#each controller.hexData}}
+          {{{code}}}
+        {{/each}}
         why?
 </script>
 
@@ -115,6 +131,8 @@ hmmmm
             Num Y
             {{input type="text" valueBinding="numY"}}
 
+            MapWidth
+            {{input type="text" class="myClass" valueBinding="mapWidth"}}
         <p>x
             <button
             {{action decX}} > - </button>
@@ -155,7 +173,7 @@ hmmmm
 <script data-template-name="ImageView" type="text/x-handlebars">
     <div class="tutWrapper">
 
-        <img class="mapImage" {{bindAttr src="mapUrl"}}>
+        <img class="mapImage" {{bindAttr src="mapUrl" }} {{bindAttr style="mapWidth"}}>
         <canvas id="tutorial" {{bindAttr src="coNam" width="imageWidth" height="controller.imageHeight"}}></canvas>
 
     </div>
