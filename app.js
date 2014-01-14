@@ -2,7 +2,8 @@ App = Ember.Application.create({});
 var SIN = Math.sin(Math.PI / 3);
 //App.ApplicationAdapter = DS.FixtureAdapter.extend();
 App.ApplicationAdapter = DS.RESTAdapter.extend({
-    host: 'http://localhost/HexMapTool/rest/index.php'
+//  host: 'http://localhost/HexMapTool/rest/index.php'
+    host: window.location.origin+window.location.pathname+"rest/index.php"
 });
 
 //App.MapAdapter = DS.RESTAdapter.extend({
@@ -382,7 +383,6 @@ App.hexPick = Ember.Mixin.create({
   {
 
     this.calculateHexpartFromPixels(pixelX, pixelY);
-    debugger;
     this.calculateHexagonFromPixels();
     this.calculateHexagonNumber();
   },
@@ -725,7 +725,6 @@ App.MapHexesController = Ember.ObjectController.extend(App.draw, App.hexPick,App
         var model = this.get('model');
         var hexData = this.get('hexData');
         var str = JSON.stringify(hexData);
-        debugger;
         model.set('hexes', str);
         var id = model.get('id');
         model.save().then(function(){
@@ -736,7 +735,7 @@ App.MapHexesController = Ember.ObjectController.extend(App.draw, App.hexPick,App
         this.set('hexData',Ember.A());
       }
     },
-  colors: [ "Town","Trail", "River", "Forest","Mountain","Road", "ReinforceZoneA","ReinforceZoneB","ReinforceZoneC", "Blocked"],
+  colors: [ "Town","Trail", "River", "Forest","Mountain","Road", "ReinforceZoneA","ReinforceZoneB","ReinforceZoneC", "Blocked","BlocksNonRoad"],
     selectedColor:"Town"
 //    selectedLabel:function(){
 //      var col = this.get('selectedColor');
@@ -928,7 +927,6 @@ App.ClickableImageView = App.ImageView.extend({
 //        myCon.get('hexData').removeObject(myObj);
 
       }else{
-        debugger;
 
         var newTerrainType = App.TerrainType.create({name:curColor});
         var type = Ember.A();
@@ -945,7 +943,6 @@ App.ClickableImageView = App.ImageView.extend({
     },
     templateName: "ImageView",
     didInsertElement: function () {
-      debugger;
         this._super();
       var str = this.get('controller.model.hexes');
       var arr = JSON.parse(str);
@@ -957,7 +954,6 @@ App.ClickableImageView = App.ImageView.extend({
       }
       }
       this.set('controller.hexData',hexes);
-      debugger;
     }
 });
 App.TerrainType = Ember.Object.extend({
@@ -978,7 +974,6 @@ App.Terrain = Ember.Object.extend({
       a.pushObject(App.TerrainType.create(type[i]));
     }
     this.set('type',a);
-    debugger;
   },
   type:Ember.A(),
   name:null,
@@ -988,7 +983,6 @@ App.Terrain = Ember.Object.extend({
     var len = this.get('type.length');
 
     var col = this.get('type');
-    debugger;
     var ret = "";
     for(var i = 0;i < col.length;i++){
     var color = "black";
@@ -1032,6 +1026,10 @@ App.Terrain = Ember.Object.extend({
         color = "black";
         disp = "B";
         break;
+      case "BlocksNonRoad":
+        color = "blue";
+        disp = "B";
+        break;
       case "ReinforceZoneC":
         color = "black";
         disp = "C";
@@ -1044,12 +1042,10 @@ App.Terrain = Ember.Object.extend({
   }.property('type.@each'),
   code:function(){
     var col = this.get('type');
-    debugger;
     var ret = "";
     for(var i = 0;i < col.length;i++){
       var color = "black";
       var c;
-      debugger;
       c = col[i].get('name');
       if(c == "ReinforceZoneA"){
         ret += "$this->terrain->addReinforceZone("+this.get('number')+",'A');<br>";
