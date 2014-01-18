@@ -720,6 +720,7 @@ App.MapHexesController = Ember.ObjectController.extend(App.draw, App.hexPick,App
   {needs: 'map',
 
     hexData:Ember.A(),
+    showData:true,
     actions:{
       save:function(){
         var model = this.get('model');
@@ -735,7 +736,7 @@ App.MapHexesController = Ember.ObjectController.extend(App.draw, App.hexPick,App
         this.set('hexData',Ember.A());
       }
     },
-  colors: [ "Town","Trail", "River", "Forest","Mountain","Road", "ReinforceZoneA","ReinforceZoneB","ReinforceZoneC", "Blocked","BlocksNonRoad"],
+  colors: [ "Town","Trail", "River", "Swamp", "Forest","Mountain","Road", "ReinforceZoneA","ReinforceZoneB","ReinforceZoneC", "Blocked","BlocksNonRoad","SpecialHexA","SpecialHexB"],
     selectedColor:"Town"
 //    selectedLabel:function(){
 //      var col = this.get('selectedColor');
@@ -1006,6 +1007,10 @@ App.Terrain = Ember.Object.extend({
         color = "green";
         disp = "F"
         break;
+      case "Swamp":
+        color = "green";
+        disp = "S"
+        break;
       case "Mountain":
         color = "brown";
         disp = "M";
@@ -1017,6 +1022,14 @@ App.Terrain = Ember.Object.extend({
       case "Trail":
         color = "brown";
         disp = "O";
+        break;
+      case "SpecialHexA":
+        color = "green";
+        disp = "A";
+        break;
+      case "SpecialHexB":
+        color = "green";
+        disp = "B";
         break;
       case "ReinforceZoneA":
         color = "black";
@@ -1047,7 +1060,11 @@ App.Terrain = Ember.Object.extend({
       var color = "black";
       var c;
       c = col[i].get('name');
-      if(c == "ReinforceZoneA"){
+      if(c == "SpecialHexA"){
+        ret += "$specialHexA[] = "+this.get('number')+";<br>";
+      }else  if(c == "SpecialHexB"){
+        ret += "$specialHexB[] = "+this.get('number')+";<br>";
+      }else  if(c == "ReinforceZoneA"){
         ret += "$this->terrain->addReinforceZone("+this.get('number')+",'A');<br>";
       }else       if(c == "ReinforceZoneB"){
         ret += "$this->terrain->addReinforceZone("+this.get('number')+",'B');<br>";
