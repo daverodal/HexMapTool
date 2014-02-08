@@ -736,7 +736,7 @@ App.MapHexesController = Ember.ObjectController.extend(App.draw, App.hexPick,App
         this.set('hexData',Ember.A());
       }
     },
-  colors: [ "Town","Trail", "River", "Swamp", "Forest","Mountain","Road", "ReinforceZoneA","ReinforceZoneB","ReinforceZoneC", "Blocked","BlocksNonRoad","SpecialHexA","SpecialHexB"],
+  colors: [ "Town","Trail", "River", "Swamp", "Forest","Mountain","Road", "Sunkenroad","Redoubt", "Wadi", "ReinforceZoneA","ReinforceZoneB","ReinforceZoneC", "Blocked","BlocksNonRoad","SpecialHexA","SpecialHexB"],
     selectedColor:"Town"
 //    selectedLabel:function(){
 //      var col = this.get('selectedColor');
@@ -1019,9 +1019,17 @@ App.Terrain = Ember.Object.extend({
         color = "red";
         disp = "O";
         break;
+      case "Sunkenroad":
+        color = "purple";
+        disp = "O";
+        break;
       case "Trail":
         color = "brown";
         disp = "O";
+        break;
+      case "Redoubt":
+        color = "purple";
+        disp = "B";
         break;
       case "SpecialHexA":
         color = "green";
@@ -1030,6 +1038,10 @@ App.Terrain = Ember.Object.extend({
       case "SpecialHexB":
         color = "green";
         disp = "B";
+        break;
+      case "Wadi":
+        color = "black";
+        disp = "W";
         break;
       case "ReinforceZoneA":
         color = "black";
