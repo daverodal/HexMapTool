@@ -736,7 +736,7 @@ App.MapHexesController = Ember.ObjectController.extend(App.draw, App.hexPick,App
         this.set('hexData',Ember.A());
       }
     },
-  colors: [ "Town","Trail", "River", "Swamp", "Forest","Mountain","Road", "Sunkenroad","Redoubt", "Wadi", "ReinforceZoneA","ReinforceZoneB","ReinforceZoneC", "Blocked","BlocksNonRoad","SpecialHexA","SpecialHexB"],
+  colors: [ "Town","Trail", "River", "Swamp", "Forest","Mountain","Road", "Sunkenroad","Redoubt", "Wadi", "ReinforceZoneA","ReinforceZoneB","ReinforceZoneC", "Blocked","BlocksNonRoad","SpecialHexA","SpecialHexB","SpecialHexC"],
     selectedColor:"Town"
 //    selectedLabel:function(){
 //      var col = this.get('selectedColor');
@@ -1039,6 +1039,10 @@ App.Terrain = Ember.Object.extend({
         color = "green";
         disp = "B";
         break;
+      case "SpecialHexC":
+        color = "green";
+        disp = "C";
+        break;
       case "Wadi":
         color = "black";
         disp = "W";
@@ -1076,6 +1080,8 @@ App.Terrain = Ember.Object.extend({
         ret += "$specialHexA[] = "+this.get('number')+";<br>";
       }else  if(c == "SpecialHexB"){
         ret += "$specialHexB[] = "+this.get('number')+";<br>";
+      }else  if(c == "SpecialHexC"){
+        ret += "$specialHexC[] = "+this.get('number')+";<br>";
       }else  if(c == "ReinforceZoneA"){
         ret += "$this->terrain->addReinforceZone("+this.get('number')+",'A');<br>";
       }else       if(c == "ReinforceZoneB"){
