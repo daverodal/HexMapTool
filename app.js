@@ -736,7 +736,12 @@ App.MapHexesController = Ember.ObjectController.extend(App.draw, App.hexPick,App
         this.set('hexData',Ember.A());
       }
     },
-  colors: [ "Town","Trail", "River", "Swamp", "Forest","Mountain","Road", "Sunkenroad","Redoubt", "Wadi", "ReinforceZoneA","ReinforceZoneB","ReinforceZoneC", "Blocked","BlocksNonRoad","SpecialHexA","SpecialHexB","SpecialHexC"],
+//  colors: function(){
+//    var ret = [];
+//    debugger;
+//    return Ember.keys(App.TerrainProperties);
+//  }.property(),
+    colors: [ "Town","Trail", "River", "Swamp", "Forest","Roughone","Roughtwo","Mountain","Road", "Sunkenroad","Redoubt", "Wadi", "ReinforceZoneA","ReinforceZoneB","ReinforceZoneC", "Blocked","BlocksNonRoad","SpecialHexA","SpecialHexB","SpecialHexC","Mine","Minedroad","FortA","FortB"],
     selectedColor:"Town"
 //    selectedLabel:function(){
 //      var col = this.get('selectedColor');
@@ -962,7 +967,29 @@ App.TerrainType = Ember.Object.extend({
   display:null
 });
 
+App.TerrainProperties = Ember.Object.create({
+  Town:{
+    color:"black",
+    disp:"T"
+  },
+  Blocked:{
+    color:"red",
+    disp:"B"
+  },
+  River:{
+    color:"blue",
+    disp:"R"
+  },
+  Forest:{
+    color:"green",
+    disp:"F"
+  },
+  Swamp:{
+    color:"green",
+    disp:"S"
+  }
 
+});
 
 
 App.Terrain = Ember.Object.extend({
@@ -1015,9 +1042,33 @@ App.Terrain = Ember.Object.extend({
         color = "brown";
         disp = "M";
         break;
+      case "Roughone":
+        color = "brown";
+        disp = "R";
+        break;
+      case "Roughtwo":
+        color = "black";
+        disp = "R";
+        break;
       case "Road":
         color = "red";
         disp = "O";
+        break;
+      case "Mine":
+        color = "red";
+        disp = "M";
+        break;
+      case "Minedroad":
+        color = "purple";
+        disp = "O";
+        break;
+      case "FortA":
+        color = "blue";
+        disp = "F";
+        break;
+      case "FortB":
+        color = "red";
+        disp = "F";
         break;
       case "Sunkenroad":
         color = "purple";

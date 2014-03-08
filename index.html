@@ -105,7 +105,6 @@ $this->mapViewer[$player]->setData({{controller.originX}} , {{controller.originY
 <script type="text/x-handlebars" id="map/hexes">
 {{view Ember.Select contentBinding="colors" selectionBinding="selectedColor"  }}
     <button {{action "save"}}>save these hexes dude</button>
-    <button {{action "kill"}}>kill all these hexes dude</button>
 
     {{view Ember.Checkbox checkedBinding="controller.showData"}}
 
