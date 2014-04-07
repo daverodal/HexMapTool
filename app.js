@@ -726,6 +726,10 @@ App.MapHexesController = Ember.ObjectController.extend(App.draw, App.hexPick,App
       save:function(){
         var model = this.get('model');
         var hexData = this.get('hexData');
+          var len = hexData.length;
+          for(var i = 0;i< len;i++){
+              hexData.objectAt(i).set('controller',false);
+          }
         var str = JSON.stringify(hexData);
         model.set('hexes', str);
         var id = model.get('id');
