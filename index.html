@@ -106,7 +106,10 @@ $this->mapViewer[$player]->setData({{controller.originX}} , {{controller.originY
 {{view Ember.Select contentBinding="colors" selectionBinding="selectedColor"  }}
     <button {{action "save"}}>save these hexes dude</button>
 
-    {{view Ember.Checkbox checkedBinding="controller.showData"}}
+    Show HexTypes {{view Ember.Checkbox checkedBinding="controller.showData"}}
+
+        Show only selected terrain Types {{view Ember.Checkbox checkedBinding="controller.showOne"}}
+
 
 <div id="terrainWrapper">
         {{view App.ClickableImageView}}
