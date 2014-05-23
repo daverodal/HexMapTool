@@ -746,7 +746,7 @@ App.MapHexesController = Ember.ObjectController.extend(App.draw, App.hexPick,App
 //    debugger;
 //    return Ember.keys(App.TerrainProperties);
 //  }.property(),
-    colors: [ "Town","Trail", "River", "Swamp", "Forest","Roughone","Roughtwo","Mountain","Road", "Sunkenroad","Redoubt", "Wadi", "ReinforceZoneA","ReinforceZoneB","ReinforceZoneC", "Blocked","BlocksNonRoad","SpecialHexA","SpecialHexB","SpecialHexC","Mine","Minedroad","FortA","FortB"],
+    colors: [ "Town","Trail", "River", "Swamp", "Forest","Roughone","Roughtwo","Mountain","Road","Secondaryroad", "Sunkenroad","Redoubt", "Wadi", "ReinforceZoneA","ReinforceZoneB","ReinforceZoneC", "Blocked","BlocksNonRoad","SpecialHexA","SpecialHexB","SpecialHexC","Mine","Minedroad","FortA","FortB"],
     selectedColor:"Town"
 //    selectedLabel:function(){
 //      var col = this.get('selectedColor');
@@ -1008,6 +1008,10 @@ App.TerrainProperties = Ember.Object.create({
   },
   Road:{
     color:"red",
+    disp:"O"
+  },
+  Secondaryroad:{
+    color:"green",
     disp:"O"
   },
   Mine:{
